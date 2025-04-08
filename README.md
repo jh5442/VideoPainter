@@ -1,7 +1,7 @@
 
 # VideoPainter
 
-This repository contains the implementation of the paper "VideoPainter: Any-length Video Inpainting and Editing with Plug-and-Play Context Control"
+[SIGGRAPH 2025] Official code of the paper "VideoPainter: Any-length Video Inpainting and Editing with Plug-and-Play Context Control"
 
 Keywords: Video Inpainting, Video Editing, Video Generation
 
@@ -49,6 +49,7 @@ Keywords: Video Inpainting, Video Editing, Video Generation
 - [2025/3/09] 📢 📢  [VPData](https://huggingface.co/datasets/TencentARC/VPData) and [VPBench](https://huggingface.co/datasets/TencentARC/VPBench) are released, the largest video inpainting dataset with precise segmentation masks and dense video captions (>390K clips).
 - [2025/3/25] 📢 📢  The 390K+ high-quality video segmentation masks of [VPData](https://huggingface.co/datasets/TencentARC/VPData) have been fully released.
 - [2025/3/25] 📢 📢  The raw videos of videovo subset have been uploaded to [VPData](https://huggingface.co/datasets/TencentARC/VPData), to solve the raw video link expiration issue.
+- [2025/4/08] 📢 📢  VideoPainter has been accepted by [SIGGRAPH 2025](https://s2025.siggraph.org/)!
 
 ## TODO
 
