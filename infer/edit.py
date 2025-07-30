@@ -305,18 +305,29 @@ def generate_video(
         video_base_name = meta_data['path'].split(".")[0]
         if ".0.mp4" in meta_data['path']:
             video_path = os.path.join(image_or_video_path, video_base_name[:-3], f'{video_base_name}.0.mp4')
-            mask_frames_path = os.path.join("../data/video_inpainting/videovo", video_base_name, "all_masks.npz")
+            mask_frames_path = os.path.join("/home/ubuntu/jin/data/VPBench/video_inpainting/videovo", video_base_name, "all_masks.npz")
         elif ".mp4" in meta_data['path']:
             video_path = os.path.join(image_or_video_path.replace("videovo", "pexels/pexels"), video_base_name[:9], f'{video_base_name}.mp4')
-            mask_frames_path = os.path.join("../data/video_inpainting/pexels", video_base_name, "all_masks.npz")
+            mask_frames_path = os.path.join("/home/ubuntu/jin/data/VPBench/video_inpainting/pexels", video_base_name, "all_masks.npz")
         else:
             raise NotImplementedError
-        fps = meta_data['fps']
-        mask_id = meta_data['mask_id']
-        start_frame = meta_data['start_frame']
-        end_frame = meta_data['end_frame']
-        all_masks = np.load(mask_frames_path)["arr_0"]
-        prompt = meta_data['caption']
+
+        # if not os.path.exists(video_path):
+        #     raise FileNotFoundError(f"Missing video: {video_path}")
+        # if not os.path.exists(mask_frames_path):
+        #     raise FileNotFoundError(f"Missing mask file: {mask_frames_path}")
+
+        try:
+            fps = meta_data['fps']
+            mask_id = meta_data['mask_id']
+            start_frame = meta_data['start_frame']
+            end_frame = meta_data['end_frame']
+            all_masks = np.load(mask_frames_path)["arr_0"]
+            prompt = meta_data['caption']
+        except FileNotFoundError as e:
+            print(f"[SKIP] Missing file: {e}")
+            exit(0)
+
 
        
         print("-"*100)

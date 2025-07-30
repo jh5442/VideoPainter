@@ -1,4 +1,5 @@
-export CUDA_VISIBLE_DEVICES=0
+#!/bin/bash
+export CUDA_VISIBLE_DEVICES=2
 
 model_path="/home/ubuntu/jin/models/video_painter_models/ckpt/CogVideoX-5b-I2V"
 num_inference_steps=50
@@ -10,45 +11,49 @@ inpainting_branches=(
     /home/ubuntu/jin/models/video_painter_models/ckpt/VideoPainter/checkpoints/branch
 )
 
-id_adapter_resample_learnable_path=/home/ubuntu/jin/models/video_painter_models/ckpt/VideoPainterID/checkpoints
+id_adapter_resample_learnable_path=../ckpt/VideoPainterID/checkpoints
 
 lora_rank=256
 
-inpainting_sample_ids=(1)
-video_editing_instructions=(
-    "Add a colorful playground."
-)
+inpainting_sample_ids=(0)
 
 inpainting_frames=49
 down_sample_fps=8
-image_or_video_path="/home/ubuntu/jin/data/VPBench/videovo/raw_video"
-inpainting_mask_meta="/home/ubuntu/jin/data/VPBench/pexels_videovo_test_dataset.csv"
+overlap_frames=0
+
+image_or_video_path=""
+inpainting_mask_meta="/home/ubuntu/jin/data/VPBench/pexels_videovo_train_dataset.csv"
+
+
 prev_clip_weight=0.0
 
 img_inpainting_model="/home/ubuntu/jin/models/video_painter_models/ckpt/FLUX.1-Fill-dev"
 
 llm_model="gpt-4o"
 
-dilate_size=48
+dilate_size=32
 
-output_base_path="/home/ubuntu/jin/results/video_painter/videovo/editing_no_mask_fps${down_sample_fps}_dilate_${dilate_size}"
+output_base_path="/home/ubuntu/jin/results/video_painter/videovo/inp_fps${down_sample_fps}_dilate_${dilate_size}_${data_kind}"
 
 if [ "$llm_model" != "None" ]; then
     output_base_path="${output_base_path}_${llm_model}"
 fi
 
+if [ "$overlap_frames" != "0" ]; then
+    output_base_path="${output_base_path}_overlap_${overlap_frames}"
+fi
+
 if [ ! -d "$output_base_path" ]; then
-    mkdir -p "$output_base_path"
+    sudo mkdir -p "$output_base_path"
+    sudo chmod -R 777 "$output_base_path"
 fi
 
 for inpainting_branch in "${inpainting_branches[@]}"; do
-    for ((i=0; i<${#inpainting_sample_ids[@]}; i++)); do
-        inpainting_sample_id="${inpainting_sample_ids[i]}"
-        video_editing_instruction="${video_editing_instructions[i]}"
+    for inpainting_sample_id in "${inpainting_sample_ids[@]}"; do
+
+        output_path="${output_base_path}/${inpainting_sample_id}.mp4"
         
-        output_path="${output_base_path}/${inpainting_sample_id}_${inpainting_frames}_prev_clip_weight_${prev_clip_weight}_${video_editing_instruction}.mp4"
-        
-        python edit.py \
+        python inpaint.py \
             --prompt "$prompt" \
             --model_path "$model_path" \
             --inpainting_branch "$inpainting_branch" \
@@ -66,11 +71,10 @@ for inpainting_branch in "${inpainting_branches[@]}"; do
             --replace_gt \
             --mask_add \
             --down_sample_fps $down_sample_fps \
+            --overlap_frames $overlap_frames \
             --prev_clip_weight $prev_clip_weight \
             --img_inpainting_model $img_inpainting_model \
-            --video_editing_instruction "$video_editing_instruction" \
             --llm_model $llm_model \
-            --dilate_size $dilate_size \
-            --lora_rank $lora_rank
+            --dilate_size $dilate_size
     done
 done

@@ -1,48 +1,39 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2
 
-model_path="../ckpt/CogVideoX-5b-I2V"
+model_path="/home/ubuntu/jin/models/video_painter_models/ckpt/CogVideoX-5b-I2V"
 num_inference_steps=50
 guidance_scale=6.0
 num_videos_per_prompt=1
 dtype="bfloat16"
 
 inpainting_branches=(
-    ../ckpt/VideoPainter/checkpoints/branch
+    /home/ubuntu/jin/models/video_painter_models/ckpt/VideoPainter/checkpoints/branch
 )
 
 id_adapter_resample_learnable_path=../ckpt/VideoPainterID/checkpoints
 
 lora_rank=256
 
-inpainting_sample_ids=($(seq 0 100000))
+inpainting_sample_ids=(0)
 
 inpainting_frames=49
 down_sample_fps=8
 overlap_frames=0
-image_or_video_path="../data/videovo/raw_video"
 
-data_kind="test"
-if [ "$data_kind" == "test" ]; then
-    inpainting_mask_meta="../data/pexels_videovo_test_dataset.csv"
-elif [ "$data_kind" == "val" ]; then
-    inpainting_mask_meta="../data/pexels_videovo_val_dataset.csv"
-elif [ "$data_kind" == "train" ]; then
-    inpainting_mask_meta="../data/pexels_videovo_train_dataset.csv"
-else
-    echo "data_kind must be test or train or val"
-    exit 1
-fi
+image_or_video_path=""
+inpainting_mask_meta="/home/ubuntu/jin/data/VPBench/pexels_videovo_train_dataset.csv"
+
 
 prev_clip_weight=0.0
 
-img_inpainting_model="../ckpt/flux_inp"
+img_inpainting_model="/home/ubuntu/jin/models/video_painter_models/ckpt/FLUX.1-Fill-dev"
 
 llm_model="gpt-4o"
 
 dilate_size=32
 
-output_base_path="./inp_fps${down_sample_fps}_dilate_${dilate_size}_${data_kind}"
+output_base_path="/home/ubuntu/jin/results/video_painter/videovo/inp_fps${down_sample_fps}_dilate_${dilate_size}_${data_kind}"
 
 if [ "$llm_model" != "None" ]; then
     output_base_path="${output_base_path}_${llm_model}"

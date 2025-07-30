@@ -259,14 +259,18 @@ def generate_video(
     if generate_type == "i2v_inpainting":
         meta_data = pd.read_csv(inpainting_mask_meta).iloc[inpainting_sample_id, :]
         video_base_name = meta_data['path'].split(".")[0]
-        if ".0.mp4" in meta_data['path']:
-            video_path = os.path.join(image_or_video_path, video_base_name[:-3], f'{video_base_name}.0.mp4')
-            mask_frames_path = os.path.join("../data/video_inpainting/videovo", video_base_name, "all_masks.npz")
-        elif ".mp4" in meta_data['path']:
-            video_path = os.path.join(image_or_video_path.replace("videovo", "pexels/pexels"), video_base_name[:9], f'{video_base_name}.mp4')
-            mask_frames_path = os.path.join("../data/video_inpainting/pexels", video_base_name, "all_masks.npz")
-        else:
-            raise NotImplementedError
+        # if ".0.mp4" in meta_data['path']:
+        #     video_path = os.path.join(image_or_video_path, video_base_name[:-3], f'{video_base_name}.0.mp4')
+        #     mask_frames_path = os.path.join("/home/ubuntu/jin/data/VPBench/video_inpainting/videovo", video_base_name, "all_masks.npz")
+        # elif ".mp4" in meta_data['path']:
+        #     video_path = os.path.join(image_or_video_path.replace("videovo", "pexels/pexels"), video_base_name[:9], f'{video_base_name}.mp4')
+        #     mask_frames_path = os.path.join("/home/ubuntu/jin/data/VPBench/video_inpainting/pexels", video_base_name, "all_masks.npz")
+        # else:
+        #     raise NotImplementedError
+
+        video_path = os.path.join(image_or_video_path, "0000", video_base_name + ".mp4")
+        mask_frames_path = os.path.join("/home/ubuntu/jin/data/video_painter/mt_test_mask", video_base_name, "all_masks.npz")
+
         fps = meta_data['fps']
         mask_id = meta_data['mask_id']
         start_frame = meta_data['start_frame']
