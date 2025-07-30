@@ -15,14 +15,14 @@ id_adapter_resample_learnable_path=../ckpt/VideoPainterID/checkpoints
 
 lora_rank=256
 
-inpainting_sample_ids=(0)
+inpainting_sample_ids=($(seq 0 1))
 
 inpainting_frames=49
 down_sample_fps=8
 overlap_frames=0
 
-image_or_video_path=""
-inpainting_mask_meta="/home/ubuntu/jin/data/VPBench/pexels_videovo_train_dataset.csv"
+image_or_video_path="/home/ubuntu/jin/data/video_painter/mt_test"
+inpainting_mask_meta="/home/ubuntu/jin/data/video_painter/mt_test_object_inpainting.csv"
 
 
 prev_clip_weight=0.0
@@ -33,7 +33,7 @@ llm_model="gpt-4o"
 
 dilate_size=32
 
-output_base_path="/home/ubuntu/jin/results/video_painter/videovo/inp_fps${down_sample_fps}_dilate_${dilate_size}_${data_kind}"
+output_base_path="/home/ubuntu/jin/results/video_painter/mt/inp_obj_fps${down_sample_fps}_dilate_${dilate_size}_${data_kind}"
 
 if [ "$llm_model" != "None" ]; then
     output_base_path="${output_base_path}_${llm_model}"

@@ -16,7 +16,7 @@ id_adapter_resample_learnable_path=../ckpt/VideoPainterID/checkpoints
 lora_rank=256
 
 inpainting_sample_ids=($(seq 0 1))
-
+#inpainting_sample_ids=(0)
 inpainting_frames=49
 down_sample_fps=8
 overlap_frames=0

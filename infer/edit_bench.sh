@@ -1,13 +1,13 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=2
 
-model_path="../ckpt/CogVideoX-5b-I2V"
+model_path="/home/ubuntu/jin/models/video_painter_models/ckpt/CogVideoX-5b-I2V"
 num_inference_steps=50
 guidance_scale=6.0
 num_videos_per_prompt=1
 dtype="bfloat16"
 
 inpainting_branches=(
-    ../ckpt/VideoPainter/checkpoints/branch
+    /home/ubuntu/jin/models/video_painter_models/ckpt/VideoPainter/checkpoints/branch
 )
 
 id_adapter_resample_learnable_path=../ckpt/VideoPainterID/checkpoints

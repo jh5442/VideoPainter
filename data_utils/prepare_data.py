@@ -55,17 +55,28 @@ def process_mask_video(mask_video_path, save_npz_path):
 
     frames = []
 
+    i = 0
+
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
+        print(np.unique(np.array(frame), return_counts=True))
+
+        frames.append(frame)
+        i += 1
+
         # Convert to grayscale if not already
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
-        frames.append(gray_frame)
 
-        # cv2.imwrite("/home/ubuntu/jin/data/video_painter/test_mask.png", frame)
-        # sys.exit()
+        print(np.unique(np.array(gray_frame), return_counts=True))
+
+        frames.append(gray_frame)
+        sys.exit()
+
+        # cv2.imwrite("/home/ubuntu/jin/data/video_painter/" + str(i) + "_test_mask.png", frame)
+        # i += 1
 
     cap.release()
 
@@ -86,6 +97,6 @@ if __name__ == '__main__':
 
     process_mask_video(mask_video_path="/home/ubuntu/jin/data/test_03_and_04/test_03_mask_trimmed.mp4",
                        save_npz_path="/home/ubuntu/jin/data/video_painter/mt_test_mask/test_03/all_masks.npz")
-
-    process_mask_video(mask_video_path="/home/ubuntu/jin/data/test_03_and_04/test_04_mask.mp4",
-                       save_npz_path="/home/ubuntu/jin/data/video_painter/mt_test_mask/test_04/all_masks.npz")
+    #
+    # process_mask_video(mask_video_path="/home/ubuntu/jin/data/test_03_and_04/test_04_mask.mp4",
+    #                    save_npz_path="/home/ubuntu/jin/data/video_painter/mt_test_mask/test_04/all_masks.npz")

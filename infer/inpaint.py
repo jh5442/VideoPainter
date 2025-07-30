@@ -23,6 +23,7 @@ from diffusers.utils import export_to_video, load_image, load_video
 from PIL import Image
 from io import BytesIO
 import base64
+import sys
 
 
 vlm_model = OpenAI()
@@ -96,12 +97,20 @@ def read_video_with_mask(video_path, masks, mask_id, skip_frames_start=0, skip_f
         
     masked_video = []
     binary_masks = []
+
+    i = 0
+
     for frame, frame_mask in zip(video, mask):
         frame_array = np.array(frame)
         
         black_frame = np.zeros_like(frame_array)
         
-        binary_mask = (frame_mask == mask_id)
+        # binary_mask = (frame_mask == mask_id)
+        # print(np.unique(frame_mask, return_counts=True))
+        binary_mask = (frame_mask > 127)
+        # print(binary_mask.shape)
+        # print(np.unique(binary_mask, return_counts=True))
+        # cv2.imwrite("/home/ubuntu/jin/data/video_painter/test_mask_in_inpaint.jpg", binary_mask)
         
         binary_mask_expanded = np.repeat(binary_mask[:, :, np.newaxis], 3, axis=2)
         
@@ -112,8 +121,14 @@ def read_video_with_mask(video_path, masks, mask_id, skip_frames_start=0, skip_f
             binary_mask_image = np.where(binary_mask, 0, 255).astype(np.uint8)
         else:
             binary_mask_image = np.where(binary_mask, 255, 0).astype(np.uint8)
+
+        Image.fromarray(binary_mask_image).convert("RGB").save("/home/ubuntu/jin/data/video_painter/" + str(i) + "_test_mask.png")
+
         binary_masks.append(Image.fromarray(binary_mask_image).convert("RGB"))
+        # sys.exit()
+
     video = [item.convert("RGB") for item in video]
+
     return video, masked_video, binary_masks, fps
 
 def video_editing_prompt(prompt, llm_model, masked_image=None, target_img_caption=True):
@@ -267,6 +282,8 @@ def generate_video(
         #     mask_frames_path = os.path.join("/home/ubuntu/jin/data/VPBench/video_inpainting/pexels", video_base_name, "all_masks.npz")
         # else:
         #     raise NotImplementedError
+
+        print(video_base_name)
 
         video_path = os.path.join(image_or_video_path, "0000", video_base_name + ".mp4")
         mask_frames_path = os.path.join("/home/ubuntu/jin/data/video_painter/mt_test_mask", video_base_name, "all_masks.npz")
